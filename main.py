@@ -3,12 +3,10 @@ import pandas as pd
 import time
 import os
 
-# Create a folder called data in the main project folder
 DATA_FOLDER = "data"
 if not os.path.exists(DATA_FOLDER):
     os.makedirs(DATA_FOLDER)
 
-# Define CSV file paths for each part of the usability testing
 CONSENT_CSV = os.path.join(DATA_FOLDER, "consent_data.csv")
 DEMOGRAPHIC_CSV = os.path.join(DATA_FOLDER, "demographic_data.csv")
 TASK_CSV = os.path.join(DATA_FOLDER, "task_data.csv")
@@ -16,13 +14,10 @@ EXIT_CSV = os.path.join(DATA_FOLDER, "exit_data.csv")
 
 
 def save_to_csv(data_dict, csv_file):
-    # Convert dict to DataFrame with a single row
     df_new = pd.DataFrame([data_dict])
     if not os.path.isfile(csv_file):
-        # If CSV doesn't exist, write with headers
         df_new.to_csv(csv_file, mode='w', header=True, index=False)
     else:
-        # Else, we need to append without writing the header!
         df_new.to_csv(csv_file, mode='a', header=False, index=False)
 
 
@@ -66,7 +61,6 @@ def main():
             if not consent_given:
                 st.warning("You must agree to the consent terms before proceeding.")
             else:
-                # Save the consent acceptance time
                 data_dict = {
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                     "consent_given": consent_given
@@ -101,11 +95,9 @@ def main():
 
         st.write("Please select a task and record your experience completing it.")
 
-        # For this template, we assume there's only one task, in project 3, we will have to include the actual tasks
         selected_task = st.selectbox("Select Task", ["Task 1: Example Task"])
         st.write("Task Description: Perform the example task in our system...")
 
-        # Track success, completion time, etc.
         start_button = st.button("Start Task Timer")
         if start_button:
             st.session_state["start_time"] = time.time()
@@ -132,7 +124,6 @@ def main():
             save_to_csv(data_dict, TASK_CSV)
             st.success("Task Results successfully saved!")
 
-            # Reset any stored time in session_state if you'd like
             if "start_time" in st.session_state:
                 del st.session_state["start_time"]
             if "task_duration" in st.session_state:
@@ -187,7 +178,6 @@ def main():
         else:
             st.info("No exit questionnaire data available yet.")
 
-        # Example of aggregated stats (for demonstration only)
         if not exit_df.empty:
             st.subheader("Exit Questionnaire Averages")
             avg_satisfaction = exit_df["satisfaction"].mean()
@@ -197,4 +187,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
